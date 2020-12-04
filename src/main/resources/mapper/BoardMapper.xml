@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.example.board.mapper.BoardMapper">
+ 
+ 	<!-- 게시글 개수 -->
+    <select id="getBoardCount" parameterType="String" resultType="int">
+        SELECT
+            COUNT(1) AS CNT
+        FROM
+        	BOARD
+        WHERE
+        	1=1
+        <if test="value != null and value != ''">
+        AND (TITLE LIKE CONCAT_WS(#{value }, '%', '%') OR CONTENT LIKE CONCAT_WS(#{value }, '%', '%'))
+        </if>
+    </select>
+    
+    <!-- 게시글 목록 -->
+    <select id="getBoardList" parameterType="hashMap" resultType="Board">
+        SELECT
+            *
+        FROM
+        	BOARD
+        WHERE
+        	BNO > 0
+        <if test="keyword != null and keyword != ''">
+        AND (TITLE LIKE CONCAT_WS(#{keyword }, '%', '%') OR CONTENT LIKE CONCAT_WS(#{keyword }, '%', '%'))
+        </if>
+        ORDER BY
+        	BNO DESC
+        <if test="startRN != null and startRN gte 0">
+        LIMIT
+        	#{startRN }, 10
+        </if>	
+    </select>
+    
+    <!-- 게시글 상세 -->
+    <select id="getBoard" parameterType="int" resultType="Board">
+        SELECT
+            *
+        FROM
+        	BOARD
+        WHERE
+            BNO = #{bno }
+    </select>
+    
+    <!-- 게시글 등록 -->
+    <insert id="register" parameterType="Board">
+        INSERT INTO BOARD (
+        	TITLE
+        	, CONTENT
+        	, WRITER
+        ) VALUES (
+        	#{title }
+        	, #{content }
+        	, #{writer }
+        ) 
+    </insert>
+    
+    <!-- 게시글 수정 -->
+    <update id="modify" parameterType="Board">
+        UPDATE BOARD
+        SET
+        	TITLE = #{title }
+        	, CONTENT = #{content }
+        WHERE
+        	BNO = #{bno }
+    </update>
+    
+    <!-- 게시글 삭제 -->
+    <delete id="remove" parameterType="int">
+        DELETE FROM BOARD
+        WHERE
+        	BNO = #{bno }
+    </delete>
+    
+    <!-- 조회수 증가 -->
+    <update id="addReadCnt" parameterType="int">
+    	UPDATE BOARD
+    	SET
+    		READCNT = READCNT + 1
+    	WHERE
+    		BNO = #{bno }
+    </update>
+
+</mapper>

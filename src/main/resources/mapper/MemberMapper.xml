@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+ 
+<mapper namespace="com.example.board.mapper.MemberMapper">
+ 
+ 	<!-- 회원 정보 -->
+    <select id="getMember" parameterType="Member" resultType="Member">
+        SELECT
+            *
+        FROM
+        	MEMBER
+        WHERE
+        	ID = #{id }
+        AND PASSWORD = #{password }
+    </select>
+    
+    <!-- 회원 중복 체크 -->
+    <select id="memberCheck" parameterType="Member" resultType="Member">
+		SELECT
+			*
+		FROM
+			MEMBER
+		WHERE
+			ID = #{id }
+		OR EMAIL = #{email }
+    </select>
+    
+    <!-- 회원 가입 -->
+    <insert id="register" parameterType="Member">
+        INSERT INTO MEMBER (
+        	ID
+        	, PASSWORD
+        	, USERNAME
+        	, EMAIL
+        ) VALUES (
+        	#{id }
+        	, #{password }
+        	, #{username }
+        	, #{email }
+        ) 
+    </insert>
+
+</mapper>
